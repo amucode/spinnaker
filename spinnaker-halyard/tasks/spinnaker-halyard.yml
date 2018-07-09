@@ -1,0 +1,70 @@
+---
+- name: configure local installation
+  shell: "hal config deploy edit --type localdebian"
+
+- name: Set the Persistant Storage for Halyard
+  shell: "echo <Enter aws_secret_key> | hal config storage s3 edit  --access-key-id {{ aws_access_key }} --secret-access-key --bucket {{ s3_bucket }}  --region {{ aws_region}}  && hal config storage edit --type s3"
+  tags: spinnaker
+
+- name: Spinnaker Version
+  command: hal config version edit --version 1.8.0
+  tags: spinnaker  
+
+- name: Spinnaker Deploy Using Halyard
+  shell: hal deploy apply
+  become_method: sudo 
+  tags: spinnaker  
+
+- name: Expose Spinnaker gate and deck services externally
+  shell: "echo \"host: 0.0.0.0\" | tee gate.yml deck.yml"
+  args:
+    chdir: /home/{{ spinnaker_user }}/.hal/default/service-settings
+  tags: spinnaker
+
+- name: Configure Deck UI  to acess Outside
+  shell: hal config security ui edit --override-base-url {{ spinnaker_deck_url }}
+  tags: spinnaker
+
+- name: Configure Gate to listen from Deck
+  shell: hal config security api edit --override-base-url {{ spinnaker_api_url }}
+  tags: spinnaker  
+
+- name: Spinnaker Deploy Using Halyard
+  shell: hal deploy apply
+  become_method: sudo 
+  tags: spinnaker  
+
+- name: Set timezone to UTC
+  command: hal config edit --timezone UTC
+  tags: spinnaker
+
+
+- name: Add Jenkins Master
+  shell: echo {{ jenkins_user_token }} | hal config ci jenkins master add {{ jenkins_master_name }} --address {{ jenkins_base_url }} --username {{ jenkins_username }} --password
+  tags: spinnaker  
+
+- name: Jekins Integration
+  shell: hal config ci jenkins enable
+  tags: spinnaker
+
+- name: ECR/Docker Registry Configuration
+  shell: hal config provider docker-registry account add {{ docker_registry_name }} --username {{ docker_username }} --address {{ docker_registry_address }}  --password-file /home/{{ spinnaker_user }}/credentials/{{ docker_login_token }}
+  tags: spinnaker
+
+- name: Docker registry Enable 
+  shell: hal config provider docker-registry enable
+  tags: spinnaker
+
+- name: Configure Primary Cloud provider account
+  shell: hal config provider kubernetes account add {{ cluster_name }} --kubeconfig-file=/home/{{ spinnaker_user }}/.kube/{{ kubeconfig_file }}  --context {{ service_account }} --docker-registries {{ docker_registry_name }}
+  tags: spinnaker
+
+- name: cloudprovider account enable
+  shell: hal config provider kubernetes enable
+  tags: spinnaker  
+
+- name: Perform Halyard Deploy to install and configure services
+  shell: sudo hal deploy apply
+  tags: spinnaker
+
+

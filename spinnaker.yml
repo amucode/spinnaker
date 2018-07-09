@@ -1,0 +1,12 @@
+---
+- hosts: spin
+  gather_facts: true
+  remote_user: ubuntu
+  become: true
+  become_method: sudo
+  roles:
+    - role: awscli
+    - role: spinnaker-halyard
+    
+
+

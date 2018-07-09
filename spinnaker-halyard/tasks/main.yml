@@ -1,0 +1,17 @@
+---
+- name: Get Halyard Installation Script
+  shell: "curl -O https://raw.githubusercontent.com/spinnaker/halyard/master/install/stable/InstallHalyard.sh"
+
+- name: Install Halyard
+  command: "bash InstallHalyard.sh  --user {{ spinnaker_user }}"
+  become_method: sudo 
+  tags: spinnaker
+
+- name: Update bashrc
+  shell: ". /home/{{ spinnaker_user }}/.bashrc"
+  tags: spinnaker
+  
+- include: kubectl-install.yml
+- include: cron.yaml
+- include: spinnaker-halyard.yml
+

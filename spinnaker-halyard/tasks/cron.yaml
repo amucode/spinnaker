@@ -1,0 +1,43 @@
+---
+- name: Create credentials directory
+  file:
+    path: /home/ubuntu/credentials/
+    state: directory
+    owner: ubuntu
+    #mode: 644
+  tags: clouddriver
+
+- name: Create script directory
+  file:
+    path: /home/ubuntu/scripts/
+    state: directory
+    owner: ubuntu
+    #mode: 644
+  tags: clouddriver
+- name: create script file
+  file:
+    path: /home/ubuntu/scripts/token.sh
+    state: touch
+    owner: ubuntu
+    #mode: 744
+  tags: clouddriver
+
+- name: create ECR token file
+  file:
+    path: /home/ubuntu/credentials/ecrtoken
+    state: touch
+    owner: ubuntu
+    #mode: 644
+  tags: clouddriver 
+
+- name: Write script for Cron job 
+  shell: "echo \"aws ecr get-login --no-include-email --region us-west-1 |cut -d ' ' -f 6\" | tee /home/ubuntu/scripts/token.sh"
+  
+- name: cron job to get ECR token
+  cron:
+    name: 
+    minute: "*/2"
+    job: sudo bash /home/ubuntu/scripts/token.sh > /home/ubuntu/credentials/ecrtoken
+    state: present
+    user: ubuntu
+  tags: clouddriver

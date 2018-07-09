@@ -1,0 +1,44 @@
+---
+- name: Install Python PIP
+  apt: 
+    pkg: python-pip 
+    state: latest
+    update_cache: yes
+  tags: clouddriver
+
+- name: Install AWS CLI
+  pip: 
+    name: awscli 
+    state: latest
+  tags: clouddriver  
+
+- name: Enable TAB completion for awscli
+  lineinfile:
+    dest: "/home/ubuntu/.bashrc"
+    line: "complete -C aws_completer aws"
+    state: present
+  tags: clouddriver
+
+- name: Ensure .aws directory under user home for awscli config 
+  file:  
+    path: /home/ubuntu/.aws
+    state: directory
+    owner: "ubuntu"
+    mode: 0700
+  tags: clouddriver
+
+- name: Copy awscli config to remote server
+  template:  
+    src: awscli_config.j2
+    dest: "/home/ubuntu/.aws/config" 
+    owner: "ubuntu"
+    mode: 0600
+  tags: clouddriver
+
+- name: Copy awscli Credential to remote server
+  template:  
+    src: awscli_credentials.j2
+    dest: "/home/ubuntu/.aws/credentials" 
+    owner: "ubuntu"
+    mode: 0600
+  tags: clouddriver

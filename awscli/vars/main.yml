@@ -1,0 +1,5 @@
+---
+aws_region: us-west-1
+aws_output_format: json
+aws_access_key: 'Enter aws_access_key'
+aws_secret_key: 'Enter aws_secret_key'

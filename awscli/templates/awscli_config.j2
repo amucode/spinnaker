@@ -1,0 +1,4 @@
+[default]
+region = {{ aws_region.region | default('us-west-1')}}
+output = {{ aws_output_format.output | default('json') }}
+

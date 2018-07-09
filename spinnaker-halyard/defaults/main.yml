@@ -1,0 +1,27 @@
+---
+spinnaker_halyard_installation_script_url: "https://raw.githubusercontent.com/spinnaker/halyard/master/install/stable/InstallHalyard.sh"
+spinnaker_user: ubuntu
+spinnaker_version: "1.8.0"
+cluster_name: "my-k8s-account"
+aws_access_key: "Enter aws_access_key"
+aws_secret_key: "Enter aws_secret_key"
+aws_region: "us-west-1"
+s3_bucket: "Enter s3_bucket_name"
+kubectl_url: "https://storage.googleapis.com/kubernetes-release/release/v1.10.3/kubernetes-client-linux-amd64.tar.gz"
+#kubeconfig_file: config
+#kubeconfig_source: /Users/amulya/.kube/config
+#kubeconfig_remote: /home/ubuntu/.kube
+service_account: service-account-context
+#namespaces: default
+docker_registry_name: spin-ecr
+docker_username: AWS
+docker_registry_address: "123456789.dkr.ecr.us-west-1.amazonaws.com"
+#docker_repositories: spinnaker-ecs
+docker_login_token: ecrtoken
+spinnaker_deck_url: "http://<public_ip>:9000"
+spinnaker_api_url: "http://<public_ip>:8084"
+jenkins_master_name: "jenkins-master"
+jenkins_base_url: "http://<public_ip>"
+jenkins_username: "amulya"
+jenkins_user_token: "User_api_token"
+

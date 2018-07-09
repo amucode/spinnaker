@@ -1,0 +1,35 @@
+---
+- name: Downloading kubectl binary
+  get_url:
+     url: "{{ kubectl_url }}"
+     dest: /tmp/
+  tags: clouddriver   
+
+- name: Install Kubectl
+  shell: "cd /tmp/ && tar -xzf kubernetes-client-linux-amd64.tar.gz && cd kubernetes/client/bin/ && mv kubectl /usr/local/bin/ && rm -rf /tmp/kubernetes-*"
+  tags: clouddriver
+
+- name: Create .kube Directory
+  file:
+    path: /home/ubuntu/.kube
+    state: directory
+    owner: ubuntu
+    #mode: 644
+  tags: clouddriver  
+
+# - name: creating kube Config file 
+#   file:
+#     path: /home/ubuntu/.kube/config
+#     state: touch
+#     owner: ubuntu
+#     #mode: 644
+# #   tags: clouddriver   
+
+- name: Copy Kube config file 
+  copy:
+    src: /Users/amulya/.kube/config
+    dest: /home/ubuntu/.kube
+    owner: ubuntu
+    mode: 0644
+    backup: yes
+  tags: clouddriver
